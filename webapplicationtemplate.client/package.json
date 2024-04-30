@@ -13,6 +13,7 @@
 		"@mantine/core": "^7.8.1",
 		"@mantine/form": "^7.8.1",
 		"@mantine/hooks": "^7.8.1",
+		"@mantine/notifications": "^7.8.1",
 		"axios": "^1.6.8",
 		"react": "^18.2.0",
 		"react-dom": "^18.3.1",
@@ -40,7 +41,8 @@
 		"vite": "^4.4.5"
 	},
 	"eslintConfig": {
-		"noImplicitAny": false
+		"noImplicitAny": false,
+		"no-unused-vars": "warn"
 	},
 	"prettier": {
 		"bracketSpacing": true,

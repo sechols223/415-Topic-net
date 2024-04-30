@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from 'react';
-import { PostCreateDto, PostGetDto, TopicGetDto } from '../types';
+import { PostCreateDto, PostGetDto, UserTopicGetDto } from '../types';
 import {
   Button,
   Card,
@@ -9,29 +10,51 @@ import {
   Stack,
   Table,
   Text,
-  TextInput,
   Textarea,
   Title,
 } from '@mantine/core';
 import { useAsync, useAsyncFn } from 'react-use';
 import { Api } from '../config';
 import { useDisclosure } from '@mantine/hooks';
-import { useForm } from '@mantine/form';
+import { isNotEmpty, useForm } from '@mantine/form';
+import { notifications } from '@mantine/notifications';
 
 type TopicComponentProps = {
-  topic: TopicGetDto;
+  topic: UserTopicGetDto;
+  userId: number;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  unsubscribe: (topicId: number) => Promise<any>;
 };
 
-export const TopicComponent: React.FC<TopicComponentProps> = ({ topic }) => {
+export const TopicComponent: React.FC<TopicComponentProps> = ({ topic, userId, unsubscribe }) => {
+  const [unsubscribeOpened, unsubscribeHandlers] = useDisclosure(false);
+
   const [createState, create] = useAsyncFn(async (values: PostCreateDto) => {
+    const validationResult = form.validate();
+    console.log(validationResult);
+    if (validationResult.hasErrors) {
+      notifications.show({
+        autoClose: 3000,
+        title: 'Error',
+        message: 'Unable to create post',
+      });
+      return;
+    }
+
     const response = await Api.post('/posts', { ...values });
+    handlers.close();
+    form.reset();
     return response.data;
-  });
+  }, []);
 
   const postState = useAsync(async () => {
     const response = await Api.get<PostGetDto[]>(`/posts/${topic.id}`);
     return response.data;
-  }, [createState.value]);
+  }, [createState.value, createState.loading]);
+
+  const [_, unsubscribeTopic] = useAsyncFn(async () => {
+    await unsubscribe(topic.id);
+  }, []);
 
   const rows = postState.value?.map((post) => (
     <Table.Tr key={post.id}>
@@ -41,13 +64,24 @@ export const TopicComponent: React.FC<TopicComponentProps> = ({ topic }) => {
       <Table.Td align="left">
         <Text color="black">{post.content}</Text>
       </Table.Td>
+      <Table.Td align="left">
+        <Text color="black">{post.author.username}</Text>
+      </Table.Td>
+      <Table.Td align="left">
+        <Text color="black">{new Date(post.createdOn).toLocaleString()}</Text>
+      </Table.Td>
     </Table.Tr>
   ));
   const [opened, handlers] = useDisclosure(false);
   const form = useForm<PostCreateDto>({
+    mode: 'uncontrolled',
     initialValues: {
       content: '',
       topicId: topic.id,
+      authorId: userId,
+    },
+    validate: {
+      content: isNotEmpty('Content cannot be empty.'),
     },
   });
   return (
@@ -55,11 +89,11 @@ export const TopicComponent: React.FC<TopicComponentProps> = ({ topic }) => {
       <Card shadow="sm" padding="lg" radius="md" withBorder>
         <Card.Section>
           <Stack>
-            <Title>Title: {topic.title}</Title>
-            <Text>Description: {topic.description}</Text>
-            <Group>
+            <Title>{topic.topic.title}</Title>
+            <Text>{topic.topic.description}</Text>
+            <Group p={20} align="center" justify="center">
               <Button onClick={handlers.open}>Add Message</Button>
-              <Button color="red" variant="filled">
+              <Button color="red" variant="filled" onClick={unsubscribeHandlers.open}>
                 Unsubscribe
               </Button>
             </Group>
@@ -75,6 +109,12 @@ export const TopicComponent: React.FC<TopicComponentProps> = ({ topic }) => {
                   <Table.Th>
                     <Text color="black">Message</Text>
                   </Table.Th>
+                  <Table.Th>
+                    <Text color="black">Author</Text>
+                  </Table.Th>
+                  <Table.Th>
+                    <Text color="black">Created On</Text>
+                  </Table.Th>
                 </Table.Tr>
               </Table.Thead>
               <Table.Tbody>{rows}</Table.Tbody>
@@ -82,7 +122,14 @@ export const TopicComponent: React.FC<TopicComponentProps> = ({ topic }) => {
           )}
         </Card.Section>
       </Card>
-      <Modal opened={opened} onClose={handlers.close} title="Create Post">
+      <Modal
+        opened={opened}
+        onClose={() => {
+          handlers.close();
+          form.reset();
+        }}
+        title="Create Post"
+      >
         <form onSubmit={form.onSubmit(create)}>
           <Textarea
             withAsterisk
@@ -96,11 +143,34 @@ export const TopicComponent: React.FC<TopicComponentProps> = ({ topic }) => {
             <Button type="submit" color="blue" variant="filled">
               Submit
             </Button>
-            <Button type="button" color="red" variant="filled" onClick={handlers.close}>
+            <Button
+              type="button"
+              color="red"
+              variant="filled"
+              onClick={() => {
+                handlers.close();
+                form.reset();
+              }}
+            >
               Cancel
             </Button>
           </Group>
         </form>
+      </Modal>
+      <Modal
+        opened={unsubscribeOpened}
+        onClose={unsubscribeHandlers.close}
+        title="Un-subscribe to topic?"
+      >
+        <Text>Are you sure you want to un-subscribe?</Text>
+        <Group p={5} align="center" justify="center">
+          <Button color="red" variant="filled" onClick={unsubscribeTopic}>
+            Un-subscribe
+          </Button>
+          <Button color="gray" onClick={unsubscribeHandlers.close}>
+            Cancel
+          </Button>
+        </Group>
       </Modal>
     </>
   );

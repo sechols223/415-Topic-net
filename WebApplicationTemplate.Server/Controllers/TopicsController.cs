@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApplicationTemplate.Server.Data;
 using WebApplicationTemplate.Server.Dtos;
 using WebApplicationTemplate.Server.Entities;
+using WebApplicationTemplate.Server.Extensions;
 
 namespace WebApplicationTemplate.Server.Controllers
 {
@@ -12,9 +14,12 @@ namespace WebApplicationTemplate.Server.Controllers
     {
 
         private readonly DataContext _dataContext;
-        public TopicsController(DataContext dataContext)
+        private readonly UserManager<User> _userManager;
+
+        public TopicsController(DataContext dataContext, UserManager<User> userManager)
         {
             _dataContext = dataContext;
+            _userManager = userManager;
         }
 
         [HttpGet]
@@ -40,6 +45,19 @@ namespace WebApplicationTemplate.Server.Controllers
 
             _dataContext.Set<Topic>().Add(topic);
             await _dataContext.SaveChangesAsync();
+            var user = await HttpContext.GetCurrentUser(_userManager);
+            if (user != null)
+            {
+                var userTopic = new UserTopic
+                {
+                    User = user,
+                    Topic = topic
+                };
+
+                _dataContext.Set<UserTopic>().Add(userTopic);
+                await _dataContext.SaveChangesAsync();
+            }
+            
 
             var result = ToDto(topic);
             return Ok(result);

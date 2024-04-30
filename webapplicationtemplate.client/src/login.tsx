@@ -1,18 +1,6 @@
-import { useMemo } from 'react';
-import { useAuth } from './auth-context';
-import {
-  Button,
-  Card,
-  Center,
-  Container,
-  Group,
-  Input,
-  Paper,
-  Space,
-  Stack,
-  TextInput,
-} from '@mantine/core';
-import { Form, useForm } from '@mantine/form';
+import { useAuth } from './auth/auth-context';
+import { Button, Center, Container, Group, Paper, Space, Stack, TextInput } from '@mantine/core';
+import { useForm } from '@mantine/form';
 import { LoginDto } from './types';
 import { useNavigate } from 'react-router-dom';
 

@@ -1,8 +1,8 @@
 import { createRoot } from 'react-dom/client';
 import '@mantine/core/styles.css';
-
+import '@mantine/notifications/styles.css';
 import { App } from './App';
-import React from 'react';
+
 const container = document.getElementById('root');
 const root = createRoot(container!);
 

@@ -65,6 +65,15 @@ namespace WebApplicationTemplate.Server.Controllers
         [HttpDelete("{userId}/{topicId}")]
         public async Task<ActionResult> Unsubscribe(int userId, int topicId)
         {
+            var userTopic = await _dataContext.Set<UserTopic>()
+                .FirstOrDefaultAsync(x => x.UserId == userId && x.TopicId == topicId);
+
+            if (userTopic == null)
+                return NotFound("User Topic not found");
+
+            _dataContext.Set<UserTopic>().Remove(userTopic);
+            await _dataContext.SaveChangesAsync();
+
             return NoContent();
         }
 

@@ -87,6 +87,7 @@ app.MapControllers();
 
 
 app.MapFallbackToFile("/index.html");
+
 app.UseCors("AllowOrigin");
 
 app.Run();

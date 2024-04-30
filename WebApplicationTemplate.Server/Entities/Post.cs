@@ -20,6 +20,9 @@ namespace WebApplicationTemplate.Server.Entities
 
         public required DateTimeOffset CreatedOn { get; set; } = DateTimeOffset.Now;
 
+        [ForeignKey("AuthorId")]
+        public int AuthorId { get; set; }
+        public User Author { get; set; } = default!;
 
     }
 

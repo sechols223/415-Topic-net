@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using WebApplicationTemplate.Server.Data;
 using WebApplicationTemplate.Server.Dtos;
 using WebApplicationTemplate.Server.Entities;
+using WebApplicationTemplate.Server.Extensions;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 
@@ -25,13 +26,11 @@ public class AuthenticationController : Controller
     [HttpGet("me")]
     public async Task<ActionResult> GetCurrentUser()
     {
-        string identifier = HttpContext.User.Identity?.Name ?? string.Empty;
-
-        User? user = await _userManager.FindByNameAsync(identifier);
+        var user = await HttpContext.GetCurrentUser(_userManager);
 
         if (user == null)
         {
-            return NotFound();
+            return Unauthorized();
         }
 
         UserDto dto = new()

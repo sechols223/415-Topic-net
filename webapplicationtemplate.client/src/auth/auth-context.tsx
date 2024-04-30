@@ -1,13 +1,15 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
 
-import { GetUserResponse, LoginDto, User } from './types';
-import { Api } from './config';
+import { LoginDto, Optional, User } from '../types';
+import { Api } from '../config';
+import { getCurrentUser } from './common';
 
 type AuthContextValue = {
   user: User | null | undefined;
   login: (request: LoginDto) => Promise<void>;
   register: (inputData: Registration) => Promise<void>;
   logout: () => Promise<void>;
+  getCurrentUser: () => Promise<Optional<User>>;
 };
 
 type Registration = {
@@ -25,22 +27,8 @@ const AuthContext = createContext<AuthContextValue>({
   login: () => Promise.resolve(),
   register: () => Promise.resolve(),
   logout: () => Promise.resolve(),
+  getCurrentUser: () => Promise.resolve() as Promise<Optional<User>>,
 });
-
-export function getCurrentUser(): User | null | undefined {
-  let result: User | null | undefined = undefined;
-
-  async () => {
-    try {
-      const { data, status } = await Api.get<GetUserResponse>('/auth/me');
-      console.log(data, status);
-      if (status === 200) result = data.user;
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  return result;
-}
 
 /**
  * Hook that returns the current authentication context.
@@ -48,7 +36,7 @@ export function getCurrentUser(): User | null | undefined {
  * @throws {Error} If the hook is not used within an AuthProvider
  */
 
-export function useAuth() {
+export function useAuth(): AuthContextValue {
   const context = useContext(AuthContext);
 
   if (!context) {
@@ -66,11 +54,15 @@ export function useAuth() {
  *
  * @returns {JSX.Element} The authentication context provider component.
  */
-export const AuthProvider = ({ children }: any) => {
+export const AuthProvider = ({ children }: { children: React.ReactNode }): JSX.Element => {
   const [user, setUser] = useState<User | null | undefined>(null);
 
   useEffect(() => {
-    setUser(getCurrentUser);
+    const getUser = async () => {
+      const response = await getCurrentUser();
+      setUser(response);
+    };
+    getUser();
   }, [user]);
 
   async function login(request: LoginDto) {
@@ -105,7 +97,7 @@ export const AuthProvider = ({ children }: any) => {
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout }}>
+    <AuthContext.Provider value={{ user, login, register, logout, getCurrentUser }}>
       {children}
     </AuthContext.Provider>
   );

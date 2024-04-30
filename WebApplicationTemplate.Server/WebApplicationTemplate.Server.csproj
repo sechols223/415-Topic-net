@@ -5,8 +5,13 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <SpaRoot>..\webapplicationtemplate.client</SpaRoot>
-    <SpaProxyLaunchCommand>yarn start</SpaProxyLaunchCommand>
+    <SpaProxyLaunchCommand>npm start</SpaProxyLaunchCommand>
     <SpaProxyServerUrl>https://localhost:5173</SpaProxyServerUrl>
+    <UserSecretsId>557040f2-e4f5-49e8-ba92-86cb467c0edc</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <ContainerRepository>dotnet-worker-image</ContainerRepository>
+    <IsPublishable>true</IsPublishable>
+    <EnableSdkContainerSupport>true</EnableSdkContainerSupport>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,16 +23,16 @@
     </PackageReference>
     <PackageReference Include="Microsoft.AspNetCore.SpaServices" Version="3.1.32" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="8.0.4" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.20.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />
-    <PackageReference Include="MySql.Data" Version="8.3.0" />
-    <PackageReference Include="MySql.EntityFrameworkCore" Version="8.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+
   </ItemGroup>
 
   <ItemGroup>

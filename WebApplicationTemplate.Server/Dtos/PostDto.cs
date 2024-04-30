@@ -1,20 +1,30 @@
-﻿namespace WebApplicationTemplate.Server.Dtos
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace WebApplicationTemplate.Server.Dtos
 {
     public class PostDto
     {
-        public int Id { get; set; }
+        [Range(1, int.MaxValue)]
+        public int AuthorId { get; set; }
+
+        [Range(1, int.MaxValue)]
+        public int TopicId { get; set; }
+
+        [MinLength(2)]
+        public required string Content { get; set; }
+
     }
 
     public class PostGetDto : PostDto 
     {
-        public int TopicId { get;set; }
-        public required string Content { get; set; }
+        public int Id { get; set; }
+        public DateTimeOffset CreatedOn { get; set; }
+        public UserDto Author { get; set; } = default!;
     }
 
-    public class PostCreateDto
+    public class PostCreateDto : PostDto
     {
-        public int TopicId { get; set; }
-        public required string Content { get; set; }
+        
     }
 
 }

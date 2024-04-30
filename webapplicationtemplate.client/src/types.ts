@@ -17,7 +17,7 @@ export type UserGetDto = {
   lastName: string;
   email: string;
   phoneNumber: string;
-  userName: string;
+  username: string;
 };
 
 export type TopicGetDto = {
@@ -44,15 +44,21 @@ export type LoginDto = {
 export type PostCreateDto = {
   topicId: number;
   content: string;
+  authorId: number;
 };
 
 export type PostGetDto = {
   id: number;
   topicId: number;
+  authorId: number;
   content: string;
+  author: UserGetDto;
+  createdOn: Date;
 };
 
 export type UserTopicCreateDto = {
   userId: number;
   topicId: number;
 };
+
+export type Optional<T> = T | undefined;
