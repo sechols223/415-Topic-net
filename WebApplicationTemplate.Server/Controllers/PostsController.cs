@@ -13,13 +13,48 @@ namespace WebApplicationTemplate.Server.Controllers
 
         public PostsController(DataContext dataContext)
         {
-            dataContext = _dataContext;
+            _dataContext = dataContext;
         }
+
         [HttpGet]
         public ActionResult<List<PostGetDto>> GetAll()
         {
             var data = _dataContext.Set<Post>().Select(ToDto).ToList();
             return Ok(data);
+        }
+
+        [HttpGet("{topicId}")]
+        public ActionResult<List<PostGetDto>> GetByTopicId(int topicId)
+        {
+            var data = _dataContext.Set<Post>()
+                .Where(x => x.TopicId == topicId)
+                .OrderByDescending(x => x.CreatedOn)
+                .Take(2)
+                .Select(ToDto)
+                .ToList();
+
+            return data;
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<PostGetDto>> CreatePost(PostCreateDto dto)
+        {
+            var topic = await _dataContext.Set<Topic>().FindAsync(dto.TopicId);
+            if (topic == null)
+                return NotFound("Topic not found");
+            var post = new Post
+            {
+                CreatedOn = DateTimeOffset.Now,
+                Content = dto.Content,
+                Topic = topic
+            };
+
+            _dataContext.Set<Post>().Add(post);
+            await _dataContext.SaveChangesAsync();
+
+            var result = ToDto(post);
+
+            return Ok(result);
         }
 
         private PostGetDto ToDto(Post post)
@@ -32,5 +67,7 @@ namespace WebApplicationTemplate.Server.Controllers
 
             return dto;
         }
+
+
     }
 }

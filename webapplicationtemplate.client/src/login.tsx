@@ -1,11 +1,28 @@
 import { useMemo } from 'react';
 import { useAuth } from './auth-context';
-import { Card, Container, Input, Stack, TextInput } from '@mantine/core';
+import {
+  Button,
+  Card,
+  Center,
+  Container,
+  Group,
+  Input,
+  Paper,
+  Space,
+  Stack,
+  TextInput,
+} from '@mantine/core';
 import { Form, useForm } from '@mantine/form';
 import { LoginDto } from './types';
+import { useNavigate } from 'react-router-dom';
 
 export const LoginPage = () => {
   const auth = useAuth();
+  const navigate = useNavigate();
+
+  if (auth.user) {
+    navigate('/');
+  }
 
   const form = useForm<LoginDto>({
     mode: 'controlled',
@@ -16,10 +33,10 @@ export const LoginPage = () => {
   });
 
   return (
-    <>
+    <Center>
       <Container>
-        <Card>
-          <Stack>
+        <Paper>
+          <Stack align="start">
             <form onSubmit={form.onSubmit(auth.login)}>
               <TextInput
                 withAsterisk
@@ -35,10 +52,19 @@ export const LoginPage = () => {
                 key={form.key('password')}
                 {...form.getInputProps('password')}
               />
+
+              <Space h="md" />
+              <Group>
+                <Button type="submit" variant="filled" color="blue">
+                  Login
+                </Button>
+
+                <Button>Register</Button>
+              </Group>
             </form>
           </Stack>
-        </Card>
+        </Paper>
       </Container>
-    </>
+    </Center>
   );
 };

@@ -4,7 +4,7 @@ import { GetUserResponse, LoginDto, User } from './types';
 import { Api } from './config';
 
 type AuthContextValue = {
-  user: User | null;
+  user: User | null | undefined;
   login: (request: LoginDto) => Promise<void>;
   register: (inputData: Registration) => Promise<void>;
   logout: () => Promise<void>;
@@ -21,19 +21,19 @@ type Registration = {
 };
 
 const AuthContext = createContext<AuthContextValue>({
-  user: null,
+  user: undefined,
   login: () => Promise.resolve(),
   register: () => Promise.resolve(),
   logout: () => Promise.resolve(),
 });
 
-export function getCurrentUser(): User | null {
-  let result: User | null = null;
+export function getCurrentUser(): User | null | undefined {
+  let result: User | null | undefined = undefined;
 
   async () => {
     try {
-      const { data, status } = await Api.get<GetUserResponse>('/authentication/me');
-
+      const { data, status } = await Api.get<GetUserResponse>('/auth/me');
+      console.log(data, status);
       if (status === 200) result = data.user;
     } catch (error) {
       console.error(error);
@@ -67,16 +67,15 @@ export function useAuth() {
  * @returns {JSX.Element} The authentication context provider component.
  */
 export const AuthProvider = ({ children }: any) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null | undefined>(null);
 
   useEffect(() => {
     setUser(getCurrentUser);
-  }, []);
+  }, [user]);
 
   async function login(request: LoginDto) {
     try {
-      const { data, status } = await Api.post<User>('/authentication/login', { ...request });
-
+      const { data, status } = await Api.post<User>('/auth/login', { ...request });
       if (status === 200) {
         setUser(data);
       } else {

@@ -9,7 +9,7 @@ var connectionString = builder.Configuration.GetConnectionString("DataContextCon
 
 builder.Services.AddDbContext<DataContext>(options =>
 {
-    options.UseSqlite("db.dat");
+    options.UseSqlServer(connectionString);
     options.LogTo(Console.WriteLine, new[] { DbLoggerCategory.Query.Name, DbLoggerCategory.Migrations.Name });
     options.EnableDetailedErrors();
     
@@ -21,6 +21,16 @@ builder.Services.AddDefaultIdentity<User>(options =>
 .AddEntityFrameworkStores<DataContext>();
 
 // Add services to the container.
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowOrigin", builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyHeader()
+               .AllowAnyMethod();
+    });
+});
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -75,6 +85,8 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+
 app.MapFallbackToFile("/index.html");
+app.UseCors("AllowOrigin");
 
 app.Run();

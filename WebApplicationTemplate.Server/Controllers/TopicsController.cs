@@ -35,6 +35,7 @@ namespace WebApplicationTemplate.Server.Controllers
             var topic = new Topic
             {
                 Title = dto.Title,
+                Description = dto.Description
             };
 
             _dataContext.Set<Topic>().Add(topic);
@@ -52,7 +53,8 @@ namespace WebApplicationTemplate.Server.Controllers
             var dto = new TopicGetDto
             {
                 Id = topic.Id,
-                Title = topic.Title
+                Title = topic.Title,
+                Description = topic.Description
             };
             return dto;
         }

@@ -17,7 +17,10 @@ namespace WebApplicationTemplate.Server.Entities
         [ForeignKey("TopicId")]
         public int TopicId { get; set; }
         public Topic Topic { get; set; } = default!;
-        
+
+        public required DateTimeOffset CreatedOn { get; set; } = DateTimeOffset.Now;
+
+
     }
 
     public class PostTypeConfiguration : IEntityTypeConfiguration<Post>

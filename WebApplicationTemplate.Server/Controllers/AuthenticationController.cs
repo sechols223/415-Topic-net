@@ -22,8 +22,7 @@ public class AuthenticationController : Controller
         _signInManager = signInManager;
     }
 
-    [Authorize]
-    [HttpGet("/me")]
+    [HttpGet("me")]
     public async Task<ActionResult> GetCurrentUser()
     {
         string identifier = HttpContext.User.Identity?.Name ?? string.Empty;
@@ -47,13 +46,13 @@ public class AuthenticationController : Controller
         return Ok(dto);
     }
 
-    [HttpPost("/login")]
+    [HttpPost("login")]
     public async Task<ActionResult> Login(LoginDto loginDto)
     {
         User? user = await _userManager.FindByNameAsync(loginDto.Username);
         if (user == null)
         {
-            return NotFound("Username or Password was incorrect.");
+            return Unauthorized("Username or Password was incorrect.");
         }
 
         SignInResult result = await _signInManager.PasswordSignInAsync(user, loginDto.Password, true, false);
@@ -71,10 +70,10 @@ public class AuthenticationController : Controller
             return Ok(userDto);
         }
 
-        return BadRequest();
+        return Unauthorized();
     }
 
-    [HttpPost]
+    [HttpPost("register")]
     public async Task<ActionResult> Create(CreateUserDto createUserDto)
     {
         User user = new()

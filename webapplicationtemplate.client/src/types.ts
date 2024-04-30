@@ -23,6 +23,12 @@ export type UserGetDto = {
 export type TopicGetDto = {
   id: number;
   title: string;
+  description: string;
+};
+
+export type TopicCreateDto = {
+  title: string;
+  description: string;
 };
 
 export type UserTopicGetDto = {
@@ -33,4 +39,20 @@ export type UserTopicGetDto = {
 export type LoginDto = {
   username: string;
   password: string;
+};
+
+export type PostCreateDto = {
+  topicId: number;
+  content: string;
+};
+
+export type PostGetDto = {
+  id: number;
+  topicId: number;
+  content: string;
+};
+
+export type UserTopicCreateDto = {
+  userId: number;
+  topicId: number;
 };
