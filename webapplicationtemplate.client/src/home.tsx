@@ -27,12 +27,18 @@ export const HomePage = () => {
   const [subscribeOpened, subscribeHandlers] = useDisclosure(false);
 
   const userState = useAsync(async () => {
-    const response = await Api.get('/auth/me');
-    if (response.status !== 200) {
-      navigate('/login', { replace: true });
+    try {
+      const response = await Api.get('/auth/me');
+      if (response.status !== 200) {
+        navigate('/login');
+      }
+
+      return response.data;
+    } catch (error) {
+      console.log('No auth');
+      navigate('/login');
     }
-    return response.data;
-  });
+  }, []);
 
   const createForm = useForm<TopicCreateDto>({
     mode: 'uncontrolled',
@@ -148,6 +154,7 @@ export const HomePage = () => {
   const userTopicsState = useAsync(async () => {
     const response = await Api.get<UserTopicGetDto[]>('/usertopics/all');
     if (response.status === 200) {
+      console.log(response.data);
       return response.data;
     }
     return [];

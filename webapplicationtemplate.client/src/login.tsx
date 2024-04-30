@@ -43,11 +43,18 @@ export const LoginPage = () => {
 
               <Space h="md" />
               <Group>
-                <Button type="submit" variant="filled" color="blue">
+                <Button
+                  type="submit"
+                  variant="filled"
+                  color="blue"
+                  onClick={() => navigate('/login')}
+                >
                   Login
                 </Button>
 
-                <Button>Register</Button>
+                <Button variant="filled" color="blue" onClick={() => navigate('/register')}>
+                  Register
+                </Button>
               </Group>
             </form>
           </Stack>

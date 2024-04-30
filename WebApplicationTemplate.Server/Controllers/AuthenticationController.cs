@@ -77,7 +77,7 @@ public class AuthenticationController : Controller
     {
         User user = new()
         {
-            Firstname = createUserDto.Password,
+            Firstname = createUserDto.Firstname,
             UserName = createUserDto.Username,
             Lastname = createUserDto.Lastname,
             Email = createUserDto.Email

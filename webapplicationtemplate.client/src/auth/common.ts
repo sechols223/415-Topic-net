@@ -10,7 +10,8 @@ export async function getCurrentUser(): Promise<Optional<User>> {
       result = data.user;
     }
   } catch (error) {
-    console.error(error);
+    console.log('No Auth');
+    return undefined;
   }
   return result;
 }

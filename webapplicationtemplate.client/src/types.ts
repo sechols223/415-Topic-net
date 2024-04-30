@@ -20,6 +20,15 @@ export type UserGetDto = {
   username: string;
 };
 
+export type UserCreateDto = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber: string;
+  username: string;
+  password: string;
+};
+
 export type TopicGetDto = {
   id: number;
   title: string;

@@ -26,6 +26,19 @@ namespace WebApplicationTemplate.Server.Controllers
             return Ok(data);
         }
 
+        [HttpGet("user/{id}")]
+        public async Task<ActionResult<List<UserTopicGetDto>>> GetByUserId(int userId)
+        {
+            var data = _dataContext
+                .Set<UserTopic>()
+                .Include(x => x.Topic)
+                .Where(x => x.UserId == userId)
+                .Select(ToDto)
+                .ToList();
+
+            return data;
+        }
+
         [HttpGet("all")]
         public ActionResult<List<UserTopicGetDto>> GetAll()
         {

@@ -5,7 +5,6 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <SpaRoot>..\webapplicationtemplate.client</SpaRoot>
-    <SpaProxyLaunchCommand>npm start</SpaProxyLaunchCommand>
     <SpaProxyServerUrl>https://localhost:5173</SpaProxyServerUrl>
     <UserSecretsId>557040f2-e4f5-49e8-ba92-86cb467c0edc</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
