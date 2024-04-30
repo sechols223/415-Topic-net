@@ -19,7 +19,11 @@
 		"react-router-dom": "^6.23.0",
 		"swagger-axios-codegen": "^0.16.14"
 	},
+	"resolutions": {
+		"@types/react": "18.0.25"
+	},
 	"devDependencies": {
+		"@types/node": "^20.12.7",
 		"@types/react": "^18.2.15",
 		"@types/react-dom": "^18.2.7",
 		"@typescript-eslint/eslint-plugin": "^6.0.0",
@@ -33,5 +37,24 @@
 		"postcss-simple-vars": "^7.0.1",
 		"typescript": "^5.0.2",
 		"vite": "^4.4.5"
-	}
+	},
+	"eslintConfig": {
+		"noImplicitAny": false
+	},
+	"prettier": {
+		"bracketSpacing": true,
+		"parser": "typescript",
+		"printWidth": 100,
+		"singleQuote": true,
+		"semi": true,
+		"tabWidth": 2,
+		"trailingComma": "es5"
+	},
+	"prettierIgnore": [
+		"/node_modules/",
+		"/src/api/generated/"
+	],
+	"eslintIgnore": [
+		"/node_modules"
+	]
 }
